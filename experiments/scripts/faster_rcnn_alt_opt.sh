@@ -22,23 +22,6 @@ len=${#array[@]}
 EXTRA_ARGS=${array[@]:3:$len}
 EXTRA_ARGS_SLUG=${EXTRA_ARGS// /_}
 
-# case $DATASET in
-#   pascal_voc)
-#     TRAIN_IMDB="voc_2007_trainval"
-#     TEST_IMDB="voc_2007_test"
-#     PT_DIR="pascal_voc"
-#     ITERS=40000
-#     ;;
-#   coco)
-#     echo "Not implemented: use experiments/scripts/faster_rcnn_end2end.sh for coco"
-#     exit
-#     ;;
-#   *)
-#     echo "No dataset given"
-#     exit
-#     ;;
-# esac
-
 LOG="experiments/logs/faster_rcnn_alt_opt_${NET}_${EXTRA_ARGS_SLUG}.txt.`date +'%Y-%m-%d_%H-%M-%S'`"
 exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
@@ -46,7 +29,7 @@ echo Logging output to "$LOG"
 time ./tools/train_faster_rcnn_alt_opt.py --gpu 0 \
   --net_name ZF \
   --weights data/imagenet_models/ZF.v2.caffemodel \
-  --imdb mushroom_train \
+  --imdb houseware_train \
   --cfg experiments/cfgs/faster_rcnn_alt_opt.yml \
   ${EXTRA_ARGS}
 

@@ -11,13 +11,13 @@ __sets = {}
 
 from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
-from datasets.mushroom import mushroom
+from datasets.houseware import houseware
 import numpy as np
 
 # Added
 for split in ['train']:
-    name = 'mushroom_{}'.format(split)
-    __sets[name] = (lambda split=split: mushroom(split))
+    name = 'houseware_{}'.format(split)
+    __sets[name] = (lambda split=split: houseware(split))
 
 # Set up voc_<year>_<split> using selective search "fast" mode
 for year in ['2007', '2012']:

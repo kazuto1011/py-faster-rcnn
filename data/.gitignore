@@ -3,4 +3,5 @@ imagenet_models*
 faster_rcnn_models*
 VOCdevkit*
 KINOKOdevkit
+ROSTMSdevkit
 cache
