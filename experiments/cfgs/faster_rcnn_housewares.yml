@@ -1,0 +1,5 @@
+MODELS_DIR: models/houseware
+TRAIN:
+  BG_THRESH_LO: 0.0
+TEST:
+  HAS_RPN: True
