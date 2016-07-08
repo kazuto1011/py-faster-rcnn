@@ -14,11 +14,6 @@ from datasets.coco import coco
 from datasets.houseware import houseware
 import numpy as np
 
-# Added
-for split in ['train']:
-    name = 'houseware_{}'.format(split)
-    __sets[name] = (lambda split=split: houseware(split))
-
 # Set up voc_<year>_<split> using selective search "fast" mode
 for year in ['2007', '2012']:
     for split in ['train', 'val', 'trainval', 'test']:
@@ -46,3 +41,15 @@ def get_imdb(name):
 def list_imdbs():
     """List all registered imdbs."""
     return __sets.keys()
+
+# Added
+#===============================================================================
+for split in ['train']:
+    name = 'houseware_{}'.format(split)
+    __sets[name] = (lambda split=split: houseware(split))
+
+for fold in range(4):
+    for split in ['train%d'%fold, 'test%d'%fold]:
+        name = 'houseware_{}'.format(split)
+        __sets[name] = (lambda split=split: houseware(split))
+#===============================================================================

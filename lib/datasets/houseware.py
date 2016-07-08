@@ -29,19 +29,19 @@ class houseware(imdb):
         self._data_path   = os.path.join(self._devkit_path, 'houseware')
 
         self._classes = ('__background__',
-                         'Water bottle',
-                         'Wine bottle',
+                         'WaterBottle',
+                         'WineBottle',
                          'Book',
                          'Teapot',
-                         'Watering pot',
+                         'WateringPot',
                          'Kettle',
-                         'Coffee can',
+                         'CoffeeCan',
                          'Glass',
                          'Cup',
                          'Dish',
                          'Controller'
                          )
-        self._wnid = (0,
+        self._wnid = ('__background__',
                       'n04557648',
                       'n04591713',
                       'n02870526',
@@ -200,16 +200,16 @@ class houseware(imdb):
         filename = self._get_comp_id() + '_det_' + \
             self._image_set + '_{:s}.txt'
         path = os.path.join(
-            self._devkit_path,
+            self._data_path,
             'results',
             filename)
         return path
 
     def _write_houseware_results_file(self, all_boxes):
-        for cls_ind, cls in enumerate(self.classes):
+        for cls_ind, cls in enumerate(self._wnid):
             if cls == '__background__':
                 continue
-            print 'Writing {} VOC results file'.format(cls)
+            print 'Writing {} houseware results file'.format(cls)
             filename = self._get_houseware_results_file_template().format(cls)
             with open(filename, 'wt') as f:
                 for im_ind, index in enumerate(self.image_index):
@@ -225,24 +225,21 @@ class houseware(imdb):
 
     def _do_python_eval(self, output_dir='output'):
         annopath = os.path.join(
-            self._devkit_path,
-            'VOC' + self._year,
+            self._data_path,
             'Annotations',
             '{:s}.xml')
         imagesetfile = os.path.join(
-            self._devkit_path,
-            'VOC' + self._year,
+            self._data_path,
             'ImageSets',
-            'Main',
             self._image_set + '.txt')
         cachedir = os.path.join(self._devkit_path, 'annotations_cache')
         aps = []
         # The PASCAL VOC metric changed in 2010
-        use_07_metric = True if int(self._year) < 2010 else False
-        print 'VOC07 metric? ' + ('Yes' if use_07_metric else 'No')
+        use_07_metric = False
+        # print 'VOC07 metric? ' + ('Yes' if use_07_metric else 'No')
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
-        for i, cls in enumerate(self._classes):
+        for i, cls in enumerate(self._wnid):
             if cls == '__background__':
                 continue
             filename = self._get_houseware_results_file_template().format(cls)
@@ -289,7 +286,7 @@ class houseware(imdb):
         if self.config['matlab_eval']:
             self._do_matlab_eval(output_dir)
         if self.config['cleanup']:
-            for cls in self._classes:
+            for cls in self._wnid:
                 if cls == '__background__':
                     continue
                 filename = self._get_houseware_results_file_template().format(cls)
