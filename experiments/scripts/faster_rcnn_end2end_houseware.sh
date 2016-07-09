@@ -7,7 +7,7 @@ export PYTHONUNBUFFERED="True"
 
 GPU_ID=0
 NET=ZF
-ITERS=10 #70000
+ITERS=70000
 
 for fold in `seq 0 3`
 do
