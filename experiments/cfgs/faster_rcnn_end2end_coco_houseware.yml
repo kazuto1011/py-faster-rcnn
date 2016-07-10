@@ -1,4 +1,4 @@
-MODELS_DIR: models/houseware
+MODELS_DIR: models/coco_houseware
 TRAIN:
   HAS_RPN: True
   IMS_PER_BATCH: 1
