@@ -2,6 +2,7 @@ selective_search*
 imagenet_models*
 faster_rcnn_models*
 VOCdevkit*
+coco
 KINOKOdevkit
 ROSTMSdevkit
 cache
