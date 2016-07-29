@@ -9,7 +9,7 @@ GPU_ID=0
 NET=ZF
 ITERS=70000
 
-for fold in `seq 0 3`
+for fold in `seq 1 4`
 do
   LOG="experiments/logs/`date +'%Y-%m-%d_%H-%M-%S'`_faster_rcnn_end2end_${NET}_fold${fold}.txt"
   TRAIN_IMDB=houseware_train${fold}
