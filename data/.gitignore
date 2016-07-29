@@ -5,4 +5,5 @@ VOCdevkit*
 coco
 KINOKOdevkit
 ROSTMSdevkit
+imagenet
 cache

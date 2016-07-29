@@ -24,9 +24,9 @@ class houseware(imdb):
 
     def __init__(self, image_set, devkit_path=None):
         imdb.__init__(self, image_set)
-        self._image_set   = image_set
+        self._image_set = image_set
         self._devkit_path = self._get_default_path() if devkit_path is None else devkit_path
-        self._data_path   = os.path.join(self._devkit_path, 'houseware')
+        self._data_path = os.path.join(self._devkit_path, 'data')
 
         self._classes = ('__background__',
                          'WaterBottle',
@@ -55,14 +55,14 @@ class houseware(imdb):
                       'n03096960'
                       )
         self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
-        self._wnid_to_ind  = dict(zip(self._wnid, xrange(self.num_classes)))
-        self._image_ext    = '.JPEG'
-        self._image_index  = self._load_image_set_index()
+        self._wnid_to_ind = dict(zip(self._wnid, xrange(self.num_classes)))
+        self._image_ext = '.JPEG'
+        self._image_index = self._load_image_set_index()
 
         # Default to roidb handler
         self._roidb_handler = self.gt_roidb
-        self._salt          = str(uuid.uuid4())
-        self._comp_id       = 'comp4'
+        self._salt = str(uuid.uuid4())
+        self._comp_id = 'comp4'
 
         # PASCAL specific config options
         self.config = {'cleanup': True,
@@ -88,7 +88,7 @@ class houseware(imdb):
         Construct an image path from the image's "index" identifier.
         """
         image_path = os.path.join(self._data_path, 'Images',
-                                  index + self._image_ext)
+                                  index[:23] + self._image_ext)
         assert os.path.exists(image_path), \
             'Path does not exist: {}'.format(image_path)
         return image_path
@@ -109,7 +109,7 @@ class houseware(imdb):
         """
         Return the default path where PASCAL VOC is expected to be installed.
         """
-        return os.path.join(cfg.DATA_DIR, 'ROSTMSdevkit')
+        return os.path.join(cfg.DATA_DIR, 'imagenet')
 
     def gt_roidb(self):
         """
@@ -156,31 +156,31 @@ class houseware(imdb):
         Load image and bounding boxes info from XML file in the PASCAL VOC
         format.
         """
-        filename = os.path.join(self._data_path, 'Annotations', index + '.xml')
-        tree     = ET.parse(filename)
-        objs     = tree.findall('object')
-        if not self.config['use_diff']:
-            non_diff_objs = [obj for obj in objs if int(obj.find('difficult').text) == 0]
-            objs = non_diff_objs
+        filename = os.path.join(self._data_path, 'Annotations', index[:23] + '.xml')
+        tree = ET.parse(filename)
+        objs = tree.findall('object')
+        # if not self.config['use_diff']:
+        #     non_diff_objs = [obj for obj in objs if int(obj.find('difficult').text) == 0]
+        #     objs = non_diff_objs
         num_objs = len(objs)
 
-        boxes      = np.zeros((num_objs, 4), dtype=np.uint16)
+        boxes = np.zeros((num_objs, 4), dtype=np.uint16)
         gt_classes = np.zeros((num_objs), dtype=np.int32)
-        overlaps   = np.zeros((num_objs, self.num_classes), dtype=np.float32)
-        seg_areas  = np.zeros((num_objs), dtype=np.float32)
+        overlaps = np.zeros((num_objs, self.num_classes), dtype=np.float32)
+        seg_areas = np.zeros((num_objs), dtype=np.float32)
 
         # Load object bounding boxes into a data frame.
         for ix, obj in enumerate(objs):
             bbox = obj.find('bndbox')
-            x1  = float(bbox.find('xmin').text)
-            y1  = float(bbox.find('ymin').text)
-            x2  = float(bbox.find('xmax').text)
-            y2  = float(bbox.find('ymax').text)
+            x1 = float(bbox.find('xmin').text)
+            y1 = float(bbox.find('ymin').text)
+            x2 = float(bbox.find('xmax').text)
+            y2 = float(bbox.find('ymax').text)
             cls = self._wnid_to_ind[obj.find('name').text.lower().strip()]
-            boxes[ix, :]      = [x1, y1, x2, y2]
-            gt_classes[ix]    = cls
+            boxes[ix, :] = [x1, y1, x2, y2]
+            gt_classes[ix] = cls
             overlaps[ix, cls] = 1.0
-            seg_areas[ix]     = (x2 - x1 + 1) * (y2 - y1 + 1)
+            seg_areas[ix] = (x2 - x1 + 1) * (y2 - y1 + 1)
 
         overlaps = scipy.sparse.csr_matrix(overlaps)
 
